@@ -8,34 +8,27 @@ require("dotenv").config();
 
 const User = require('../models/user')
 
-controller.signup = (req, res) => {
-    // console.log(req.body);
-    User.findOne({ email: req.body.email }).exec((err, user) => {
+controller.signup = async (req, res) => {
+    try {
+        const user = await User.findOne({ email: req.body.email }).exec();
         if (user) {
             return res.status(400).json({
-                error: 'Email is taken'
+                error: "Cet adresse e-mail existe déja"
             });
-        }
-
-        const { name, email, password } = req.body;
-        let username = shortId.generate();
-        let profile = `${process.env.CLIENT_URL}/profile/${username}`;
-
-        let newUser = new User({ name, email, password, profile, username });
-        newUser.save((err, success) => {
-            if (err) {
-                return res.status(400).json({
-                    error: err
-                });
-            }
-            // res.json({
-            //     user: success
-            // });
+        } else {
+            const { name, email, password } = req.body;
+            let username = shortId.generate();
+            let profile = `${process.env.CLIENT_URL}/profile/${username}`; 
+            let newUser = new User({ name, email, password, profile, username });
+            await newUser.save(); 
             res.json({
                 message: 'Signup success! Please signin.'
-            });
-        });
-    });
+            }); 
+        }
+    }
+    catch (err) {
+        return console.log(err);
+    }
 };
 
 
