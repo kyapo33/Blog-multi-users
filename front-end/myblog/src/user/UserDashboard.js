@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState} from 'react';
 import Menu from '../core/Menu';
 import { isAuthenticated } from '../auth';
 import { Link } from 'react-router-dom'

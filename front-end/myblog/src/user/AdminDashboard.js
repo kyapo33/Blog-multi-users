@@ -15,7 +15,7 @@ const AdminDashboard = () => {
             <div className = "card">
                 <h4 className ="card-header">Administration</h4>
                 <ul className = "list-group">
-                    <Link className = "nav-link" to="/create/category">Gérer les catégories</Link>
+                    <Link className = "nav-link" to="/manage/category">Gérer les catégories</Link>
                     <Link className = "nav-link" to="/create/product">Ajouter un produit</Link>
                     <Link className = "nav-link" to="/manage/product">Gérer les produits</Link>
                     <Link className = "nav-link" to="/admin/orders">Commandes clients</Link>
