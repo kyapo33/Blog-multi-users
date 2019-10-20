@@ -9,4 +9,10 @@ router.post('/signup', signupValidator, auth.signup)
 router.post('/signin', auth.signin)
 router.get('/signout', auth.signout)
 
+router.get('/secret', auth.requireSignIn, (req, res) => {
+    res.json({
+        user: req.auth
+    })
+})
+
 module.exports = router
