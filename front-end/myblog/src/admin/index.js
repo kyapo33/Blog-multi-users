@@ -47,3 +47,19 @@ export const deleteCategory = async (slug, token) => {
     }
 };
 
+export const createBlog = async (blog, token) => {
+    try {
+        const response = await fetch(`${API_URL}/create/blog`, {
+            method: "POST",
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: blog
+        });
+        return response.json();
+    }
+    catch (err) {
+        return console.log(err);
+    }
+};
