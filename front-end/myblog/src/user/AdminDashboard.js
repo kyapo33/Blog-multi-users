@@ -42,10 +42,10 @@ const AdminDashboard = () => {
             <Menu/>
             <h2 className="jumbotron">Bienvenue {name}</h2>
             <div className = "row">
-                <div className = "col-3" >
+                <div className = "col-md-3" >
                     {AdminLinks()}
                 </div>
-                <div className = "col-9" >
+                <div className = "col-md-9" >
                     {AdminInfo()} 
                 </div>
             </div>

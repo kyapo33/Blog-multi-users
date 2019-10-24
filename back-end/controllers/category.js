@@ -55,7 +55,7 @@ controller.blogsByCategories = async (req, res) => {
         const data = await Blog.find({ categories: category })
             .populate('categories', '_id name slug')
             .populate('postedBy', 'name')
-            .select('_id title body slug mtitle mdesc categories postedBy createdAt updateAt')
+            .select('_id title excerpt body slug mtitle mdesc categories postedBy createdAt updateAt')
             .sort([[sortBy, order]])
             .exec()
         return res.json({ category: category, blogs: data });

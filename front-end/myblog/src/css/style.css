@@ -53,4 +53,8 @@ body {
 .bloglist {
     padding-top: 10%;
 }
+.related {
+    padding-top: 30px;
+    text-decoration: underline;
+}
 

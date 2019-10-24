@@ -11,6 +11,23 @@ const Blog = require('../models/blog')
 const Category = require('../models/category')
 
 
+controller.getById = async (req, res, next, id) => {
+    try {
+        const blog = await Blog.findById(id).exec()
+        if(!blog) {
+            return res.status(400).json({
+                error: 'Aucun produit trouvé'
+            })   
+        }
+        req.blog = blog;
+        next();
+    }
+    catch (err) {
+        return res.status(400).json({
+            error: 'Aucun produit trouvé'
+        })  
+    }
+}
 
 controller.create = async (req, res) => {
     try {
@@ -132,26 +149,6 @@ controller.read = async(req, res) => {
     }   
 }
 
-controller.blogsByCategories = async (req, res) => {
-    const category = req.category
-    let order = req.query.order ? req.query.order : 'asc';
-    let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
-    let limit = req.query.limit ? parseInt(req.query.limit): 8;
-    try {
-        const data = await Product.find({ category: category })
-            .populate('category', '_id')
-            .sort([[sortBy, order]])
-            .limit(limit)
-            .exec();
-        return res.json({ category: category, product: data });
-    }
-    catch (err) {
-        return res.status(400).json({
-            error: 'Catégorie non trouvé'
-        }) 
-    }
-};
-
 controller.remove = async(req, res) => {
     const slug = req.params.slug.toLowerCase()
     try {
@@ -223,6 +220,27 @@ controller.photo = async(req, res) => {
     catch (err) {
         return res.status(400).json({
             error: 'Image indisponible'
+        })
+    }  
+}
+
+controller.listRelated = async(req, res) => {
+    let limit = req.body.limit ? parseInt(req.body.limit): 10;
+    let order = req.query.order ? req.query.order : 'asc';
+    let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+    try {
+        const blogs = await Blog.find({_id: {$ne : req.blog}, categories: {$in: req.blog.categories}})
+            .limit(limit)
+            .populate('categories', '_id name slug')
+            .populate('postedBy', 'name')
+            .select('_id title body slug mtitle mdesc categories postedBy createdAt updateAt')
+            .sort([[sortBy, order]])
+            .exec()
+        return res.json(blogs)
+    }
+    catch (err) {
+        return res.status(400).json({
+            error: 'Aucun Blogs trouvés'
         })
     }  
 }

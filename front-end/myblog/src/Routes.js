@@ -23,7 +23,7 @@ const Routes = () => {
                 <AdminRoute path = "/admin/dashboard" exact component= {AdminDashboard}/>
                 <AdminRoute path = "/manage/category" exact component= {ManageCategory}/>
                 <AdminRoute path = "/create/blog" exact component= {AddBlog}/>
-                <Route path = "/blogs/:slug" exact component= {Single}/>
+                <Route path = "/blogs/:slug/:blogId" exact component= {Single}/>
                 <Route path = "/categories/:slug" exact component= {Categories}/>
             </Switch>
         </BrowserRouter>

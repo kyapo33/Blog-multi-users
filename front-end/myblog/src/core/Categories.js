@@ -58,7 +58,7 @@ const Category = ({match}) => {
                             <div className="post-preview">
                                 <img alt={blog.title} className="img img-fluid" style={{maxHeight: '150px', width:'auto'}} src={`${API_URL}/blog/photo/${blog.slug}`}/>
                                 <h2 className="post-title">
-                                 <Link to={`/blogs/${blog.slug}`}>{blog.title}</Link>
+                                 <Link to={`/blogs/${blog.slug}/${blog._id}`}>{blog.title}</Link>
                                 </h2>
                                 <h3 className="post-subtitle">
                                     {parse(`${blog.excerpt}`)}

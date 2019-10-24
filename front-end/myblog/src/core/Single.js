@@ -4,10 +4,13 @@ import {singleBlog} from '../core'
 import moment from 'moment'
 import parse from 'html-react-parser';
 import { API_URL } from "../config"
-
+import {getRelatedBlogs} from '../core'
+import {Link} from "react-router-dom"
 
 const Single = ({match}) => {
     const [oneBlog, setOneBlog] = useState({})
+    const [related, setRelated] = useState([])
+
      // eslint-disable-next-line
      const [error, setError] = useState(false)
 
@@ -25,9 +28,36 @@ const Single = ({match}) => {
         }   
     }
 
+    const loadRelated = async (blogId) => {
+        try {
+            const data = await getRelatedBlogs(blogId, 'createdAt')
+            if(data.error) {
+               return setError(data.error)
+            } else {
+                return setRelated(data)
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }   
+    }
+
+    const showRelated = () => {
+        return (
+            related && related.map((r, i) => {
+                return (
+                    <ul key={i}>
+                        <Link to={`/blogs/${r.slug}/${r._id}`}><li>{r.title}</li></Link>
+                    </ul>
+                )
+            })
+        )   
+    } 
+
     useEffect(() => {
+        loadRelated(match.params.blogId)
         loadBlog(match.params.slug)
-    }, [match.params.slug]);
+    }, [match.params.slug, match.params.blogId]);
 
     return (
         <div className="">
@@ -45,11 +75,15 @@ const Single = ({match}) => {
             </div>
         </header>
         <article>
-            <div className="container">
+            <div className="container-fluid">
                 <div className="row">
-                    <div className="col-lg-8 col-md-10 mx-auto">
+                    <div className="col-lg-8 col-md-8 mx-auto">
                         {parse(`${oneBlog.body}`)}
                     </div>  
+                    <div className="col-lg-4 col-md-4 mx-auto related">
+                        <h3 className="mb-4">Dans la même catégorie</h3>
+                        {showRelated()}
+                    </div> 
                 </div>
             </div>
         </article>

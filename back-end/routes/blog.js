@@ -12,6 +12,9 @@ router.get('/blog/:slug', blog.read);
 router.delete('/blog/:slug', auth.requireSignIn, auth.isAdmin, blog.remove);
 router.put('/edit/blog/:slug', auth.requireSignIn, auth.isAdmin, blog.edit);
 router.get('/blog/photo/:slug', blog.photo);
-router.get('/blog/categories/:slug', blog.blogsByCategories);
+router.get('/blog/related/:blogId', blog.listRelated);
+
+router.param("blogId", blog.getById)
+
 
 module.exports = router
