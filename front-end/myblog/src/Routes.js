@@ -10,7 +10,7 @@ import AdminDashboard from './user/AdminDashboard'
 import ManageCategory from './admin/ManageCategory'
 import AddBlog from './admin/AddBlog'
 import Single from './core/Single'
-
+import Categories from './core/Categories'
 
 const Routes = () => {
     return (
@@ -24,6 +24,7 @@ const Routes = () => {
                 <AdminRoute path = "/manage/category" exact component= {ManageCategory}/>
                 <AdminRoute path = "/create/blog" exact component= {AddBlog}/>
                 <Route path = "/blogs/:slug" exact component= {Single}/>
+                <Route path = "/categories/:slug" exact component= {Categories}/>
             </Switch>
         </BrowserRouter>
     );     

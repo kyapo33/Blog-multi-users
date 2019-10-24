@@ -26,3 +26,15 @@ export const singleBlog = async (slug) => {
         return console.log(err);
     }
 };
+
+export const getBlogsByCategory = async (slug, sortBy) => {
+    try {
+        const response = await fetch(`${API_URL}/categories/${slug}`, {
+            method: "GET",
+        });
+        return response.json();
+    }
+    catch (err) {
+        return console.log(err);
+    }
+}

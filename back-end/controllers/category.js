@@ -4,6 +4,7 @@ const controller = express.Router()
 require("dotenv").config();
 
 const Category = require('../models/category')
+const Blog = require('../models/blog')
 
 controller.create = async (req, res) => {
     try {
@@ -37,6 +38,27 @@ controller.read = async (req, res) => {
     try {
         const category = await Category.findOne({ slug }).exec();
         return res.json({ category });
+    }
+    catch (err) {
+        return res.status(400).json({
+            error: 'Catégorie non trouvé'
+        }) 
+    }
+};
+
+controller.blogsByCategories = async (req, res) => {
+    const slug = req.params.slug.toLowerCase()
+    let order = req.query.order ? req.query.order : 'asc';
+    let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+    try {
+        const category = await Category.findOne({ slug }).exec();
+        const data = await Blog.find({ categories: category })
+            .populate('categories', '_id name slug')
+            .populate('postedBy', 'name')
+            .select('_id title body slug mtitle mdesc categories postedBy createdAt updateAt')
+            .sort([[sortBy, order]])
+            .exec()
+        return res.json({ category: category, blogs: data });
     }
     catch (err) {
         return res.status(400).json({

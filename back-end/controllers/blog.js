@@ -132,6 +132,26 @@ controller.read = async(req, res) => {
     }   
 }
 
+controller.blogsByCategories = async (req, res) => {
+    const category = req.category
+    let order = req.query.order ? req.query.order : 'asc';
+    let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+    let limit = req.query.limit ? parseInt(req.query.limit): 8;
+    try {
+        const data = await Product.find({ category: category })
+            .populate('category', '_id')
+            .sort([[sortBy, order]])
+            .limit(limit)
+            .exec();
+        return res.json({ category: category, product: data });
+    }
+    catch (err) {
+        return res.status(400).json({
+            error: 'Catégorie non trouvé'
+        }) 
+    }
+};
+
 controller.remove = async(req, res) => {
     const slug = req.params.slug.toLowerCase()
     try {

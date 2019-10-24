@@ -1,32 +1,33 @@
 import React, {useState, useEffect} from 'react'
 import Menu from './Menu'
 import banner from '../img/home-bg.jpg';
-import {listBlogsCategories} from '../core'
+import {getBlogsByCategory} from '../core'
 import {getCategories} from '../admin';
 import {Link} from "react-router-dom"
 import moment from 'moment'
 import parse from 'html-react-parser';
 import { API_URL } from "../config"
 
-const Home = () => {
+const Category = ({match}) => {
     const [blogs, setBlogs] = useState('')
-    const [categories, setCategories] = useState('')
+    const [categories, setCategories] = useState([])
+
 
     // eslint-disable-next-line
     const [error, setError] = useState(false)
 
-    const loadBlogs = async () => {
+    const loadBlogs = async (slug) => {
         try {
-            const data = await listBlogsCategories('createdAt'); 
+            const data = await getBlogsByCategory(slug, 'createdAt');
             if(data.error) {
                 return setError(data.error)
             } else {
-                return setBlogs(data.blogs, data.categories, data.size)
+                return setBlogs(data.blogs)
             }
         }
         catch (err) {
             console.log(err);
-        }  
+        }   
     }
 
     const init = async () => {
@@ -43,14 +44,12 @@ const Home = () => {
         }       
     }
 
-
     useEffect(() => {
-        loadBlogs()
         init()
-    // eslint-disable-next-line
-    }, []);
+        loadBlogs(match.params.slug)
+    }, [match.params.slug]);
 
-   const showBlogs = () => {
+    const showBlogs = () => {
         return ( 
             blogs && blogs.map((blog, i) => {
                 return ( 
@@ -82,25 +81,13 @@ const Home = () => {
     const showCategories = () => {
         return categories && categories.map((c, i) => (
             <ul key={i} className="lastpost">
-                <li > 
-                    <Link  to={`/categories/${c.slug}`}>
+                <li> 
+                    <Link to={`/categories/${c.slug}`}>
                         {c.name}
                     </Link>  
                 </li>   
             </ul>
         ))
-    }
-
-    const showLastPosts = () => {
-        return blogs && blogs.map((blog, i) => (
-            <ul key={i} className="lastpost">
-                <li > 
-                    <Link  to={`/blogs/${blog.slug}`}>
-                        {blog.title}
-                    </Link>  
-                </li>   
-            </ul>
-        ))    
     }
 
     return (
@@ -125,6 +112,9 @@ const Home = () => {
                 </div>
                 <div className="col-md-4 bloglist">
                     <h3 className="titleaside">Catégories</h3>
+                    <ul className="lastpost"><li><Link to="/">
+                        Toutes
+                    </Link></li></ul>
                     {showCategories()}
                 </div>
             </div>    
@@ -134,5 +124,4 @@ const Home = () => {
          
     )
 }
-
-export default Home;
+export default Category;

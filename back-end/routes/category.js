@@ -11,5 +11,6 @@ router.post('/create/category', categoryValidator, auth.requireSignIn, auth.isAd
 router.get('/category/:slug', category.read);
 router.delete('/category/:slug', auth.requireSignIn, auth.isAdmin, category.remove);
 router.get('/category', category.list);
+router.get('/categories/:slug', category.blogsByCategories);
 
 module.exports = router
