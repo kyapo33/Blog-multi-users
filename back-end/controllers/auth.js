@@ -31,7 +31,6 @@ controller.signup = async (req, res) => {
     }
 };
 
-
 controller.signin = async (req, res) => {
     const{email, password} = req.body
     try {

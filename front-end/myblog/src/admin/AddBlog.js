@@ -28,7 +28,7 @@ const AddBlog = () => {
         title:'',
     })
 
-    const {error, sizeError, success, formData, title} = values
+    const {error, success, formData, title} = values
 
     const init = async () => {
         try {

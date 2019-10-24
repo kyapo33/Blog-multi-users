@@ -9,7 +9,7 @@ import AdminRoute from './auth/AdminRoute'
 import AdminDashboard from './user/AdminDashboard'
 import ManageCategory from './admin/ManageCategory'
 import AddBlog from './admin/AddBlog'
-
+import Single from './core/Single'
 
 
 const Routes = () => {
@@ -23,6 +23,7 @@ const Routes = () => {
                 <AdminRoute path = "/admin/dashboard" exact component= {AdminDashboard}/>
                 <AdminRoute path = "/manage/category" exact component= {ManageCategory}/>
                 <AdminRoute path = "/create/blog" exact component= {AddBlog}/>
+                <Route path = "/blogs/:slug" exact component= {Single}/>
             </Switch>
         </BrowserRouter>
     );     

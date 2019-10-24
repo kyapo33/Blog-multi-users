@@ -22,3 +22,35 @@
     height: 5px !important;
 }
 
+.ql-editor {
+    min-height: 300px;
+}
+
+img {
+    width: 100%;
+    overflow-x: hidden
+}
+
+.post-subtitle {
+    font-weight: 200;   
+}
+.categorie {
+    font-size: 0.6em;
+}
+body {
+    overflow-x: hidden   
+}
+.aside {
+    padding-top: 10%;
+}
+.titleaside {
+    text-decoration: underline;
+    padding-bottom: 15px;
+}
+.lastpost li {
+    list-style-type: none;
+}
+.bloglist {
+    padding-top: 10%;
+}
+
