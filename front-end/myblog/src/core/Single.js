@@ -43,15 +43,12 @@ const Single = ({match}) => {
     }
 
     const showRelated = () => {
-        return (
-            related && related.map((r, i) => {
-                return (
-                    <ul key={i}>
-                        <Link to={`/blogs/${r.slug}/${r._id}`}><li>{r.title}</li></Link>
-                    </ul>
-                )
-            })
-        )   
+        return related && related.map((r, i) => ( 
+                <ul key={i}>
+                    <Link to={`/blogs/${r.slug}/${r._id}`}><li>{r.title}</li></Link>
+                </ul>
+            )
+        ) 
     } 
 
     useEffect(() => {

@@ -1,34 +1,41 @@
 import React, {useState, useEffect} from 'react';
 import Menu from '../core/Menu';
 import {isAuthenticated} from '../auth';
-import {createBlog, getCategories} from '.';
+import {getCategories, editBlog} from '.';
 import {FormText, Label, Button, Form, FormGroup, Input} from 'reactstrap';
 import ReactQuill from 'react-quill';
+import {singleBlog} from '../core'
 
-const AddBlog = () => {
-    const retrieveBlog = () => {
-        if (typeof window === 'undefined') {
-            return false;
-        }
-        if (localStorage.getItem('blog')) {
-            return JSON.parse(localStorage.getItem('blog'));
-        } else {
-            return false;
-        }
-    };
-    
+const UpdateBlog = ({match}) => {
+
     const [categories, setCategories] = useState([]);
     const [checked, setChecked] = useState([]); 
-    const [body, setBody] = useState(retrieveBlog())
+    const [body, setBody] = useState('');
     const [values, setValues] = useState({
-        error:'',
-        sizeError:'',
-        success:'',
-        formData:'',
-        title:'',
-    })
+        title: '',
+        error: '',
+        success: '',
+        formData: '',
+        body: ''
+    });
 
-    const {error, success, formData, title} = values
+    const { error, success, formData, title } = values;
+
+    const loadBlog = async (slug) => {
+        try {
+            const data = await singleBlog(slug);
+            if(data.error) {
+                return console.log(data.error)
+            } else {
+                setValues({...values, title: data.title, formData: new FormData() });
+                setBody(data.body);
+                return setCategoriesArray(data.categories);
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }   
+    }
 
     const init = async () => {
         try {
@@ -45,8 +52,9 @@ const AddBlog = () => {
     }
 
     useEffect(() => {
-        init();
+        loadBlog(match.params.slug)
         setValues({...values, formData: new FormData()});
+        init()
     // eslint-disable-next-line 
     }, []);
 
@@ -59,9 +67,14 @@ const AddBlog = () => {
     const handleBody = e => {
         setBody(e);
         formData.set('body', e);
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('blog', JSON.stringify(e));
-        }
+    };
+
+    const setCategoriesArray = blogCategories => {
+        let ca = [];
+        blogCategories.map((c, i) => {
+            return (ca.push(c._id))   
+        });
+        setChecked(ca);
     };
 
     const handleToggle = c => () => {
@@ -79,40 +92,44 @@ const AddBlog = () => {
         formData.set('categories', all);
     };
 
+    const findOutCategory = c => {
+        const result = checked.indexOf(c);
+        if (result !== -1) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    const {token} = isAuthenticated();
+
+    const update = async (e) => {
+        e.preventDefault();
+        const data = await editBlog(formData, token, match.params.slug);
+        if (data.error) {
+            setValues({ ...values, error: data.error });
+        } else {
+            setValues({ ...values, title: data.title, success: `L'article "${data.title}" a bien été modifié` });
+        }
+    };
+    
     const showCategories = () => {
         return (
             categories &&
             categories.map((c, i) => (
                 <li key={i} className="list-unstyled">
-                    <input onChange={handleToggle(c._id)} type="checkbox" className="mr-2" />
+                    <input
+                        onChange={handleToggle(c._id)}
+                        checked={findOutCategory(c._id)}
+                        type="checkbox"
+                        className="mr-2"
+                    />
                     <label className="form-check-label">{c.name}</label>
                 </li>
             ))
         );
     };
-
-    const capitalize = (str) => {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
-    const {token} = isAuthenticated();
-
-    const publish = async (e) => {
-        e.preventDefault();
-        try {
-            const data = await createBlog(formData, token); 
-            if (data.error) {
-                return setValues({ ...values, error: data.error });
-            } else {
-                setValues({ ...values, title: '', error: '', success: `Le nouvel article "${data.title}" a été ajouté` });
-                setBody('');
-            } 
-        }
-        catch (err) {
-            return console.log(err);
-        }
-    };
-       
+  
     const showError = () => (
         <div className="alert alert-danger" style={{ display: error ? '' : 'none' }}>
             {error}
@@ -127,12 +144,12 @@ const AddBlog = () => {
 
     const newBlogForm = () => ( 
         <div className="" >
-            <Form className="" onSubmit={publish}>
+            <Form className="" onSubmit={update} >
                 <FormGroup>
-                    <Input type="text" onChange={handleChange('title')} name="title" placeholder="Title" value={capitalize(title)} />
+                    <Input type="text" onChange={handleChange('title')} name="title" placeholder="Title" value={title} />
                 </FormGroup>
                 <FormGroup>
-                    <ReactQuill onChange={handleBody} modules={AddBlog.modules} formats={AddBlog.formats} value={body} />
+                    <ReactQuill onChange={handleBody} modules={UpdateBlog.modules} formats={UpdateBlog.formats} value={body} />
                 </FormGroup>
                 <FormGroup>
                     <Label className="btn btn-outline-info">
@@ -165,7 +182,7 @@ const AddBlog = () => {
     );
 }
 
-AddBlog.modules = {
+UpdateBlog.modules = {
     toolbar: [
         [{ header: '1' }, { header: '2' }, { header: [3, 4, 5, 6] }, { font: [] }],
         [{ size: [] }],
@@ -177,7 +194,7 @@ AddBlog.modules = {
     ]
 };
  
-AddBlog.formats = [
+UpdateBlog.formats = [
     'header',
     'font',
     'size',
@@ -195,4 +212,4 @@ AddBlog.formats = [
 ];
 
 
-export default AddBlog;
+export default UpdateBlog;

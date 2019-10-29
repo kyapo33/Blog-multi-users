@@ -11,6 +11,8 @@ import ManageCategory from './admin/ManageCategory'
 import AddBlog from './admin/AddBlog'
 import Single from './core/Single'
 import Categories from './core/Categories'
+import ManageBlog from './admin/ManageBlog'
+import UpdateBlog from './admin/UpdateBlog'
 
 const Routes = () => {
     return (
@@ -23,6 +25,8 @@ const Routes = () => {
                 <AdminRoute path = "/admin/dashboard" exact component= {AdminDashboard}/>
                 <AdminRoute path = "/manage/category" exact component= {ManageCategory}/>
                 <AdminRoute path = "/create/blog" exact component= {AddBlog}/>
+                <AdminRoute path = "/manage/blogs" exact component= {ManageBlog}/>
+                <AdminRoute path = "/edit/blog/:slug" exact component= {UpdateBlog}/>
                 <Route path = "/blogs/:slug/:blogId" exact component= {Single}/>
                 <Route path = "/categories/:slug" exact component= {Categories}/>
             </Switch>
